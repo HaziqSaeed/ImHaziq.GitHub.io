@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haziq Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: #D4B5B5;
+            height: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .header-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            text-align: center;
+            z-index: 1;
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex: 1;
+        }
+
+        .sidebar-left, .sidebar-right {
+            background-color: white;
+            width: 300px;
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .intro-section {
+            margin-bottom: 30px;
+        }
+
+        .intro-name {
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .intro-title {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .intro-description {
+            font-size: 1.1em;
+            color: #555;
+            line-height: 1.6;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #D4B5B5;
+        }
+
+        main {
+            background-color: #D4B5D4;
+            flex: 1;
+            padding: 40px;
+        }
+
+        .projects-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #333;
+            font-size: 2.5em;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .project-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .project-image {
+            width: 100%;
+            height: 200px;
+            background-color: #f0f0f0;
+        }
+
+        .project-content {
+            padding: 20px;
+        }
+
+        .project-title {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .project-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .project-tags {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: #e0e0e0;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .work-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+
+        .work-header {
+            padding: 20px;
+            background: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .work-header:after {
+            content: '+';
+            font-size: 20px;
+        }
+
+        .work-card.active .work-header:after {
+            content: '-';
+        }
+
+        .work-content {
+            display: none;
+            padding: 20px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .work-card.active .work-content {
+            display: block;
+        }
+
+        .work-title {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .work-subtitle {
+            color: #666;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .work-description {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .work-description li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .work-description li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+        }
+
+        footer {
+            background-color: #D4B5B5;
+            padding: 20px;
+            text-align: center;
+        }
+
+        #audio-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            padding: 10px;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            background: rgba(212, 181, 181, 0.8);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+
+        #audio-control:hover {
+            background: rgba(212, 181, 181, 1);
+        }
+
+        @media (max-width: 768px) {
+            .content-wrapper {
+                flex-direction: column;
+            }
+            
+            .sidebar-left, .sidebar-right {
+                width: 100%;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <audio id="background-audio" loop autoplay>
+        <source src="for you.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <button id="audio-control">🔊</button>
+
+    <div class="container">
+        <header>
+            <div class="video-container">
+                <video autoplay muted loop>
+                    <source src="videoplayback.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div class="header-content">
+                <h1>Welcome to My Portfolio</h1>
+            </div>
+        </header>
+        
+        <div class="content-wrapper">
+            <aside class="sidebar-left">
+                <div class="intro-section">
+                    <div class="intro-name">Hi, I'm Haziq! 👋</div>
+                    <div class="intro-title">Enthusiastic Data Engineer</div>
+                    <div class="intro-description">
+                        Currently exploring the fascinating world of ML models and their applications in robotics and camera systems. Every day is a new opportunity to learn and innovate! 🤖📷
+                    </div>
+                </div>
+            </aside>
+            
+            <main>
+                <section class="projects-section">
+                    <h2 class="section-title">My Projects</h2>
+                    <div class="projects-grid">
+                        <div class="project-card">
+                            <div class="project-image">
+                                <img src="/api/placeholder/400/320" alt="Robot Control System">
+                            </div>
+                            <div class="project-content">
+                                <h3 class="project-title">Robot Control System</h3>
+                                <p class="project-description">
+                                    A Python-based control system for autonomous robots. Features include path planning, obstacle avoidance, and real-time sensor data processing using ROS (Robot Operating System).
+                                </p>
+                                <div class="project-tags">
+                                    <span class="tag">Python</span>
+                                    <span class="tag">ROS</span>
+                                    <span class="tag">Robotics</span>
+                                    <span class="tag">OpenCV</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="project-card">
+                            <div class="project-image">
+                                <img src="/api/placeholder/400/320" alt="Computer Vision Project">
+                            </div>
+                            <div class="project-content">
+                                <h3 class="project-title">Vision-Guided Robot</h3>
+                                <p class="project-description">
+                                    Computer vision system that enables robots to identify and manipulate objects. Implemented using Python with TensorFlow and integrated with robotic arm control.
+                                </p>
+                                <div class="project-tags">
+                                    <span class="tag">Computer Vision</span>
+                                    <span class="tag">TensorFlow</span>
+                                    <span class="tag">Robotics</span>
+                                    <span class="tag">AI</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="projects-section">
+                    <h2 class="section-title">Work Experience</h2>
+                    <div class="work-card">
+                        <div class="work-header">
+                            <h3 class="work-title">ETL Developer - IT 1 Specialist Data Steward</h3>
+                        </div>
+                        <div class="work-content">
+                            <div class="work-subtitle">Franchise Tax Board, Sacramento, CA | Feb 2024 - June 2024</div>
+                            <ul class="work-description">
+                                <li>Monitored and maintained 100+ complex production jobs, achieving 98% data accuracy and reliability for all state agencies and taxpayer payment data.</li>
+                                <li>Mapped and refactor existing jobs to successfully migrate processes to a scalable data lake architecture, improving data processing efficiency.</li>
+                                <li>Optimized existing SSIS jobs to process payment data from financial institutions and state agencies efficiently, resulting in a 25% increase in customer satisfaction.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="work-card">
+                        <div class="work-header">
+                            <h3 class="work-title">ETL Developer - DB2 Team</h3>
+                        </div>
+                        <div class="work-content">
+                            <div class="work-subtitle">Franchise Tax Board, Sacramento, CA | Mar 2022 - Feb 2024</div>
+                            <ul class="work-description">
+                                <li>Built robust data pipelines by implementing the Hadoop framework in DataStage to enable the movement of large volumes of taxpayer data from heterogeneous sources, leading to a 20% improvement in data quality and performance.</li>
+                                <li>Collaborated with testing and production operations teams to troubleshoot and resolve complex technical issues in DB2 jobs at the architecture level, ensuring minimal downtime and operational continuity.</li>
+                                <li>Designed comprehensive documentation outlining project scope and technical requirements, reducing project onboarding time by 30% and facilitating clear communication with senior leadership.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="work-card">
+                        <div class="work-header">
+                            <h3 class="work-title">ETL Developer - SQL Team</h3>
+                        </div>
+                        <div class="work-content">
+                            <div class="work-subtitle">Franchise Tax Board, Sacramento, CA | Nov 2019 - Feb 2024</div>
+                            <ul class="work-description">
+                                <li>Responsible for streamline the migration process of 50+ production jobs in SSIS to SQL Server 2017</li>
+                                <li>Collaborated with the DBA team to validate data storage and ensure the security and backup of sensitive taxpayer data for 49 million individuals post-migration.</li>
+                                <li>Refactored legacy jobs to identify and resolve data anomalies early, reducing data ingestion time by 15%.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="projects-section">
+                    <h2 class="section-title">Education</h2>
+                    <div class="work-card">
+                        <div class="work-content" style="display: block;">
+                            <h3 class="work-title">California State University, Sacramento</h3>
+                            <div class="work-subtitle">Bachelor of Science: Computer Science, Mathematics Engineering Science</div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+            
+            <aside class="sidebar-right">
+                <div class="intro-section">
+                    <div class="intro-name">Contact Info</div>
+                    <div class="intro-description">
+                        Email: haziqsaeed530@gmail.com
+                    </div>
+                </div>
+            </aside>
+        </div>
+        
+        <footer>
+            Footer
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const audio = document.getElementById('background-audio');
+            const button = document.getElementById('audio-control');
+            
+            // Audio control
+            audio.volume = 0.5;
+            
+            const playAttempt = audio.play();
+            
+            if (playAttempt !== undefined) {
+                playAttempt.catch(error => {
+                    button.textContent = '🔈';
+                });
+            }
+            
+            button.addEventListener('click', function() {
+                if (audio.paused) {
+                    audio.play();
+                    button.textContent = '🔊';
+                } else {
+                    audio.pause();
+                    button.textContent = '🔈';
+                }
+            });
+
+            // Work experience accordion
+            document.querySelectorAll('.work-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    card.classList.toggle('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
