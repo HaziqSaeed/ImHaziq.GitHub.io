@@ -118,7 +118,7 @@
         }
 
         .project-card {
-            background: white;
+            background: rgb(255, 255, 255);
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -131,10 +131,19 @@
         }
 
         .project-image {
-            width: 100%;
-            height: 200px;
-            background-color: #f0f0f0;
-        }
+     width: 100%;
+    height: 200px;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+    .project-image img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
 
         .project-content {
             padding: 20px;
@@ -273,6 +282,42 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 70%;
+    max-width: 700px;
+    border-radius: 10px;
+    position: relative;
+}
+
+.close-modal {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-modal:hover {
+    color: black;
+}
     </style>
 </head>
 <body>
@@ -313,18 +358,18 @@
                     <div class="projects-grid">
                         <div class="project-card">
                             <div class="project-image">
-                                <img src="/api/placeholder/400/320" alt="Robot Control System">
+                                <img src="fire-dashboard1.png" alt="California Wildfire Dashboard">
                             </div>
                             <div class="project-content">
-                                <h3 class="project-title">Robot Control System</h3>
+                                <h3 class="project-title">California Wildfire Dashboard</h3>
                                 <p class="project-description">
-                                    A Python-based control system for autonomous robots. Features include path planning, obstacle avoidance, and real-time sensor data processing using ROS (Robot Operating System).
+                                    Interactive Dashbard building using Python Shiny Framework
                                 </p>
                                 <div class="project-tags">
                                     <span class="tag">Python</span>
-                                    <span class="tag">ROS</span>
-                                    <span class="tag">Robotics</span>
-                                    <span class="tag">OpenCV</span>
+                                    <span class="tag">Shiny</span>
+                                    <span class="tag">Folium</span>
+                                    <span class="tag">Pandas</span>
                                 </div>
                             </div>
                         </div>
@@ -419,6 +464,13 @@
             Footer
         </footer>
     </div>
+    <div id="project-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="modal-title"></h2>
+            <p id="modal-description">This is a detailed description of the project that appears when you click the card. You can put any content here!</p>
+        </div>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -453,6 +505,59 @@
                 });
             });
         });
+
+       // Get the modal
+const modal = document.getElementById('project-modal');
+const modalTitle = document.getElementById('modal-title');
+const modalDescription = document.getElementById('modal-description');
+
+// Get all project cards
+document.querySelectorAll('.project-card').forEach(card => {
+    card.addEventListener('click', () => {
+        modal.style.display = "block";
+        // Get specific content from the clicked card
+        const cardTitle = card.querySelector('.project-title').textContent;
+        const cardDescription = card.querySelector('.project-description').textContent;
+        
+        // Set modal content based on which card was clicked
+        modalTitle.textContent = cardTitle;
+        modalDescription.textContent = cardDescription;
+
+        // You can add more specific content based on which card was clicked
+        if (cardTitle === "California Wildfire Dashboard") {
+            modalDescription.innerHTML = `
+                <p>This is the detailed content for the California Wildfire Dashboard:</p>
+                <ul>
+                    <li>Interactive dashboard built with Python Shiny Framework</li>
+                    <li>Visualizes wildfire data across California</li>
+                    <li>LINK TO DASHBOARD - https://hswork.shinyapps.io/fire-dashboard1/ </li>
+                    <a href="https://hswork.shinyapps.io/fire-dashboard1/">Visit Interactive Dashboard</a>
+                </ul>
+            `;
+        } else if (cardTitle === "Vision-Guided Robot") {
+            modalDescription.innerHTML = `
+                <p>This is the detailed content for the Vision-Guided Robot:</p>
+                <ul>
+                    <li>Computer vision system for robotic control - In Progress</li>
+                    <li>Built with PyTorch and Python</li>
+                    <li>Real-time object detection and manipulation</li>
+                </ul>
+            `;
+        }
+    });
+});
+
+// Close button functionality
+document.querySelector('.close-modal').addEventListener('click', () => {
+    modal.style.display = "none";
+});
+
+// Click outside modal to close
+window.addEventListener('click', (event) => {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+});
     </script>
 </body>
 </html>
