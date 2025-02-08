@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setting Up SQL Server on Mac with AWS RDS and Azure Data Studio</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-top: 30px;
+        }
+
+        h3 {
+            color: #34495e;
+        }
+
+        .code-block {
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .command {
+            color: #61afef;
+        }
+
+        .parameter {
+            color: #d19a66;
+        }
+
+        ul, ol {
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        .note {
+            background-color: #f1f8ff;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            margin: 20px 0;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .highlight {
+            color: #188038;
+            font-weight: bold;
+        }
+
+           /* Add this to your existing styles */
+    .back-link {
+        display: inline-block;
+        padding: 10px 20px;
+        margin: 20px 0;
+        background-color: #3498db;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    .back-link:hover {
+        background-color: #2980b9;
+    }
+    </style>
+</head>
+<body>
+    <a href="../index.html" class="back-link">← Back to Homepage</a>
+
+    <h1>Setting Up SQL Server on Mac with AWS RDS and Azure Data Studio</h1>
+
+    <h2>Prerequisites</h2>
+    <ul>
+        <li>macOS</li>
+        <li>Docker Desktop for Mac</li>
+        <li>AWS Account with appropriate permissions</li>
+        <li>Azure Data Studio</li>
+    </ul>
+
+    <h2>Step 1: Set Up SQL Server Environment on Mac</h2>
+    <h3>Install Docker and SQL Server</h3>
+    <ol>
+        <li>Install Docker Desktop for Mac from the official website</li>
+        <li>Pull and run SQL Server using Docker:</li>
+    </ol>
+    <div class="code-block">
+        <span class="command">docker</span> pull mcr.microsoft.com/mssql/server:2022-latest
+    </div>
+
+    <h3>Verify SQL Server Installation</h3>
+    <p>Run the following commands to test the SQL Server setup:</p>
+    <div class="code-block">
+        <span class="command">docker</span> <span class="parameter">exec</span> -it -u root sqlserver bash<br>
+        <span class="parameter">cd</span> /var/opt/mssql/
+    </div>
+
+    <div class="note">
+        <p>If you run into an issue of reading the file, you may have to change ownership. The following command helped me do that:</p>
+        <div class="code-block">
+            <span class="command">chown</span> mssql:mssql PN_NET_POSITION.csv
+        </div>
+    </div>
+
+    <h2>Step 2: Prepare Your Database</h2>
+    <ol>
+        <li>Launch Azure Data Studio</li>
+        <li>Use the Import Wizard to load your dataset:
+            <ul>
+                <li>Select your source data format</li>
+                <li>Configure mapping settings</li>
+                <li>Review and execute the import</li>
+            </ul>
+        </li>
+    </ol>
+
+    <h2>Step 3: Configure AWS IAM Policy</h2>
+    <ol>
+        <li>Navigate to IAM in AWS Console</li>
+        <li>Create a new policy or select existing policy with required permissions:
+            <ul>
+                <li>RDS full access</li>
+                <li>VPC access</li>
+                <li>Security group management</li>
+            </ul>
+        </li>
+    </ol>
+
+    <h2>Step 4: Set Up Security Group</h2>
+    <ol>
+        <li>Navigate to EC2 > Security Groups</li>
+        <li>Create a new security group with descriptive name (e.g., <span class="highlight">rds-sql-server-prod</span>)</li>
+        <li>Configure inbound rules:
+            <ul>
+                <li>Type: MSSQL</li>
+                <li>Protocol: TCP</li>
+                <li>Port Range: 1433</li>
+                <li>Source: Your IP address or appropriate CIDR range</li>
+            </ul>
+        </li>
+        <li>Add appropriate tags for resource management</li>
+    </ol>
+
+    <h2>Step 5: Create RDS Database</h2>
+    <ol>
+        <li>Navigate to RDS in AWS Console</li>
+        <li>Click "Create database"</li>
+        <li>Configure settings:
+            <ul>
+                <li>Choose SQL Server engine</li>
+                <li>Select appropriate instance size</li>
+                <li>Set VPC and security group (use the one created in Step 4)</li>
+                <li>Enable public access: Yes</li>
+                <li>Configure admin credentials</li>
+            </ul>
+        </li>
+        <li>Wait 10-15 minutes for database creation (Status: Creating → Available)</li>
+    </ol>
+
+    <div class="note">
+        <p>Test the connection to your RDS endpoint:</p>
+        <div class="code-block">
+            telnet your-database.xxxx.region.rds.amazonaws.com <span class="parameter">1433</span>
+        </div>
+    </div>
+
+    <h2>Step 6: Connect Azure Data Studio to AWS RDS</h2>
+    <ol>
+        <li>Open Azure Data Studio</li>
+        <li>Click "New Connection"</li>
+        <li>Enter connection details:
+            <ul>
+                <li>Server: Your RDS endpoint</li>
+                <li>Authentication type: SQL Login</li>
+                <li>Username: Admin username</li>
+                <li>Password: Admin password</li>
+                <li>Port: 1433</li>
+            </ul>
+        </li>
+    </ol>
+
+    <h2>Troubleshooting Tips</h2>
+    <ol>
+        <li>If connection fails, verify:
+            <ul>
+                <li>Security group inbound rules</li>
+                <li>Public accessibility settings</li>
+                <li>Network ACLs</li>
+                <li>Database instance status</li>
+            </ul>
+        </li>
+        <li>Check AWS RDS console for any error messages</li>
+        <li>Verify your IP address hasn't changed if you specified a specific IP in security group</li>
+    </ol>
+
+    <h2>Best Practices</h2>
+    <ol>
+        <li>Use meaningful names for security groups and RDS instances</li>
+        <li>Implement proper password policies</li>
+    </ol>
+</body>
+</html>
